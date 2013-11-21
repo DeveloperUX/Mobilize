@@ -60,11 +60,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mobilize.me.MapActivity" />
         </activity>
-        
-        <service
-            android:name="com.octo.android.robospice.UncachedSpiceService"
-            android:exported="false" />
-        
+                
     </application>
 
 </manifest>

@@ -125,8 +125,7 @@ public class ServerAccess extends Activity {
 			// Create a new JSON Object with name/value mappings from the JSON formatted string
 	        JSONObject jsonResponse = new JSONObject(strFormattedData);
 	        // Convert the JSON data to a useable array of protest points
-	        protestList = convertJsonToArray(jsonResponse);
-	        
+	        protestList = convertJsonToArray(jsonResponse);	        
 			Log.e( "HTTP-GET", protestList.toString() );
 			
 		} catch(JSONException e) {

@@ -1,20 +1,20 @@
 package mobilize.me;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.FIFOLimitedMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.FIFOLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class ProtestInfoActivity extends Activity {
 
@@ -38,13 +38,13 @@ public class ProtestInfoActivity extends Activity {
         imageLoader = initImageLoader();
         
 		// load the image
-		imageLoader.displayImage( imageUrL, imageView, new SimpleImageLoadingListener() {
-			@Override
-			public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-				super.onLoadingComplete(imageUri, view, loadedImage);
-//				imageBitmap = loadedImage;
-			}
-		});
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showStubImage(R.drawable.loading) // resource or drawable
+	        .resetViewBeforeLoading(true)  
+	        .cacheOnDisc(true)
+            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+	        .build();
+		imageLoader.displayImage( imageUrL, imageView, options );
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class ProtestInfoActivity extends Activity {
             int memClass = ((ActivityManager) 
                     getSystemService(Context.ACTIVITY_SERVICE))
                     .getMemoryClass();
-            memoryCacheSize = (memClass / 8) * 1024 * 1024;
+            memoryCacheSize = (memClass / 8) * 1024 * 256;
         } else {
             memoryCacheSize = 2 * 1024 * 1024;
         }
@@ -80,9 +80,10 @@ public class ProtestInfoActivity extends Activity {
                 this).threadPoolSize(5)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .memoryCacheSize(memoryCacheSize)
-                .memoryCache(new FIFOLimitedMemoryCache(memoryCacheSize-1000000))
+//                .memoryCache(new FIFOLimitedMemoryCache(memoryCacheSize-1000000))
                 .denyCacheImageMultipleSizesInMemory()
-                .discCacheFileNameGenerator(new Md5FileNameGenerator())
+                .discCacheFileNameGenerator(new Md5FileNameGenerator())                
+                .discCacheExtraOptions(800, 800, CompressFormat.PNG, 0, null)
                 .build();
  
         ImageLoader.getInstance().init(config);

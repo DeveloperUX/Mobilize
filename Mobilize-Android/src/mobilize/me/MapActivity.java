@@ -53,8 +53,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.UncachedSpiceService;
 
 /**
  * This demo shows how GMS Location can be used to check for changes to the users location.  The
@@ -113,7 +111,7 @@ public class MapActivity extends FragmentActivity
      * With {@link UncachedSpiceService} there is no cache management.
      * Remember to declare it in AndroidManifest.xml
      */
-	protected SpiceManager spiceManager = new SpiceManager(UncachedSpiceService.class);
+//	protected SpiceManager spiceManager = new SpiceManager(UncachedSpiceService.class);
 	
 	// The progress bar when user captures a protest
 	ProgressBar progressbar;
@@ -167,8 +165,7 @@ public class MapActivity extends FragmentActivity
         userId = prefs.getString("user_id", "INVALID_ID");
         
         
-        // Create the Map and Image loader
-        imageLoader = initImageLoader();
+        // Create the Map markers
         markers = new Hashtable<String, String>();
         
         // Create the Drawer that will slide from the bottom displaying the image
@@ -220,6 +217,9 @@ public class MapActivity extends FragmentActivity
 				Marker marker;
 				protestMap.clear();
 				
+				if( ProtestMapSingleton.getInstance().getProtestMap() == null )
+					return;
+				
 				for( Protest protest : ProtestMapSingleton.getInstance().getProtestMap() ) {					
 					marker = gMap.addMarker( new MarkerOptions()
 								.position( new LatLng(protest.getLatitude(), protest.getLongitude() ) )
@@ -241,14 +241,14 @@ public class MapActivity extends FragmentActivity
 
     @Override
 	protected void onStart() {
-        spiceManager.start(this);
+//        spiceManager.start(this);
         super.onStart();
 	}
 
 
 	@Override
 	protected void onStop() {
-        spiceManager.shouldStop();
+//        spiceManager.shouldStop();
         super.onStop();
 	}
 
@@ -557,37 +557,6 @@ public class MapActivity extends FragmentActivity
 			return;
 		
 	}
-	
-	
-
-	/**
-	 * Create global configuration and initialize ImageLoader with this configuration
-	 * @return The built Image Loader
-	 */
-    private ImageLoader initImageLoader() {
-        int memoryCacheSize;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-            int memClass = ((ActivityManager) 
-                    getSystemService(Context.ACTIVITY_SERVICE))
-                    .getMemoryClass();
-            memoryCacheSize = (memClass / 8) * 1024 * 1024;
-        } else {
-            memoryCacheSize = 2 * 1024 * 1024;
-        }
- 
-        final ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                this).threadPoolSize(5)
-                .threadPriority(Thread.NORM_PRIORITY - 2)
-                .memoryCacheSize(memoryCacheSize)
-                .memoryCache(new FIFOLimitedMemoryCache(memoryCacheSize-1000000))
-                .denyCacheImageMultipleSizesInMemory()
-                .discCacheFileNameGenerator(new Md5FileNameGenerator())
-                .build();
- 
-        ImageLoader.getInstance().init(config);
-        
-        return ImageLoader.getInstance();
-    }
 
 
 	@Override
