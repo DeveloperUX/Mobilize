@@ -156,6 +156,7 @@ public class ServerAccess extends Activity {
 			// convert the type and url of the protest
 			temp_protest.setType( nextJsonObj.optString("type") ); // type of event
 			temp_protest.setImageUrl( nextJsonObj.optString("image_url") ); // url of the image
+			temp_protest.setThumbUrl( nextJsonObj.optString("thumb_url") ); // url of the image
 			// get the latitude and longitude
 			JSONObject geoJsonData = new JSONObject( nextJsonObj.optString("st_asgeojson") );
 			double longitude = Double.parseDouble("" + geoJsonData.optJSONArray("coordinates").get(0));
@@ -173,15 +174,15 @@ public class ServerAccess extends Activity {
 	
 	/** Send data to the Server **/
 
-	public static String sendToServer(String encodedImageStr) {
-		return sendToServer(encodedImageStr, "0", "0", "");
+	public static String sendToServer(String thumbnail, String encodedImageStr) {
+		return sendToServer(thumbnail, encodedImageStr, "0", "0", "");
 	}
 	
-	public static String sendToServer(String encodedImageStr, String latitude, String longitude) {
-		return sendToServer(encodedImageStr, latitude, longitude, "");
+	public static String sendToServer(String thumbnail, String encodedImageStr, String latitude, String longitude) {
+		return sendToServer(thumbnail, encodedImageStr, latitude, longitude, "");
 	}
 	
-	public static String sendToServer(String encodedImageStr, String latitude, String longitude, String userId) {
+	public static String sendToServer(String thumbnail, String encodedImageStr, String latitude, String longitude, String userId) {
 		
 //		String URL = DEV_SITE + ":" + PORT;
 		
@@ -195,8 +196,14 @@ public class ServerAccess extends Activity {
 			jsonObj.put("latitude", latitude);
 			jsonObj.put("longitude", longitude);
 			// DEBUG Make sure to turn off DEV in production
-			if( DEV )	jsonObj.put("image", testImageStr);
-			else		jsonObj.put("image", encodedImageStr);
+			if( DEV ) {
+				jsonObj.put("image", testImageStr);
+				jsonObj.put("thumbnail", thumbnail);
+			}
+			else {
+				jsonObj.put("image", encodedImageStr);
+				jsonObj.put("thumbnail", thumbnail);
+			}
 			
 			// Set the URL to the specific script we want to run
 			// Create the POST object and add the parameters

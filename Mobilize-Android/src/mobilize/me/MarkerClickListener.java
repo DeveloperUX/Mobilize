@@ -39,7 +39,7 @@ public class MarkerClickListener implements OnMarkerClickListener {
 		// Getting reference to the TextView to set title
 		
 //		TextView title = (TextView) infobox.findViewById(R.id.description);                       
-		ImageView imageView = ((ImageView) infobox.findViewById(R.id.image));
+		ImageView imageView = ((ImageView) infobox.findViewById(R.id.loaded_image));
 		
 //		  title.setText( marker.getTitle() );
 		  

@@ -8,6 +8,7 @@ import java.util.Hashtable;
 
 import mobilize.me.background.MapUpdater;
 import mobilize.me.external.SlidingUpPanelLayout;
+import mobilize.me.utils.BitmapFixer;
 import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -41,6 +42,8 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -169,10 +172,10 @@ public class MapActivity extends FragmentActivity
         markers = new Hashtable<String, String>();
         
         // Create the Drawer that will slide from the bottom displaying the image
-		SlidingUpPanelLayout infoDrawer = (SlidingUpPanelLayout) findViewById(R.id.infobox);
+//		SlidingUpPanelLayout infoDrawer = (SlidingUpPanelLayout) findViewById(R.id.infobox);
 		
 		// drawer preferences
-		infoDrawer.setPanelHeight(0);
+//		infoDrawer.setPanelHeight(0);
 		
 		
 		
@@ -202,6 +205,8 @@ public class MapActivity extends FragmentActivity
         };
         
         recurringTask.run();
+        
+        bitmapFixer = new BitmapFixer();
     }
     
     public void updateProtestPoints() {
@@ -278,6 +283,8 @@ public class MapActivity extends FragmentActivity
             if (gMap != null) {
 //                SlidingDrawer infoDrawer = (SlidingDrawer) findViewById(R.id.infobox);
                 gMap.setMyLocationEnabled(true);
+                // pan to the user's location
+
 //                gMap.setOnMyLocationButtonClickListener(this);
 //                gMap.setOnMarkerClickListener( new MarkerClickListener(infoDrawer) );
                 gMap.setOnMarkerClickListener( this );
@@ -376,7 +383,11 @@ public class MapActivity extends FragmentActivity
     }
     
 
-    /** Called after the camera intent is finished */
+	BitmapFixer bitmapFixer;
+	
+    /** 
+     * Called after the camera intent is finished and a picture has been captured 
+    **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     	
@@ -394,14 +405,17 @@ public class MapActivity extends FragmentActivity
                 //... some code to inflate/create/find appropriate ImageView to place grabbed image
 //                this.grabImage(imageView);
                 
-            	// Store the image file to the device and get the image in Bytecode format
-            	byte[] imageByteArray = compressImage(mImageUri.getPath());
-        		// Convert the Image Bytecode to Base 64 
-        		String imageBase64 = Base64.encodeToString(imageByteArray, Base64.NO_WRAP);
+            	// Scale down the original image so we could upload faster
+            	Bitmap scaledBitmap = bitmapFixer.decodeSampledBitmap(mImageUri.getPath(), 1600, 1600);
+            	String imageBase64 = bitmapFixer.compressImage(scaledBitmap);
+            	// Scale down the original image again to create our thumbnail that we will load first
+            	Bitmap thumbBitmap = bitmapFixer.decodeSampledBitmap(mImageUri.getPath(), 420, 420);
+            	String thumbBase64 = bitmapFixer.compressImage(thumbBitmap);
+            	
         		// Run upload task in background to upload the image to the backend server along with location coordinates
             	ImageUploaderTask uploaderTask = new ImageUploaderTask();
             	// SEND!
-            	uploaderTask.execute( imageBase64, String.valueOf(lastLatitude), String.valueOf(lastLongitude), userId );
+            	uploaderTask.execute( thumbBase64, imageBase64, String.valueOf(lastLatitude), String.valueOf(lastLongitude), userId );
             	
             	
             } else if (resultCode == RESULT_CANCELED) {
@@ -443,17 +457,6 @@ public class MapActivity extends FragmentActivity
         }
     }
     
-    public byte[] compressImage(String path) {
-    	// get a bitmap from the image file
-		Bitmap bm = BitmapFactory.decodeFile( path );
-		// STEP 3 :: The image Bitmap from the Bitmap gets compressed as a jpeg 
-		// for saving and gets stored into a ByteArrayOutputStream
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		// Compress the Bitmap to JPEG
-		bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-		// Get a transferrable Byte Array
-		return baos.toByteArray();
-    }
 
 	private class ImageUploaderTask extends AsyncTask<String, Integer, Void> {
 		
@@ -466,7 +469,7 @@ public class MapActivity extends FragmentActivity
 		
 		@Override
 		protected Void doInBackground(String... params) {
-			ServerAccess.sendToServer( params[0], params[1], params[2], params[3] );
+			ServerAccess.sendToServer( params[0], params[1], params[2], params[3], params[4] );
 			return null;
 		}
 		
@@ -576,7 +579,7 @@ public class MapActivity extends FragmentActivity
 	}
 	
 	public boolean old_functionality(Marker marker) {
-		SlidingUpPanelLayout infoSlidingPanel = (SlidingUpPanelLayout) findViewById(R.id.infobox);
+//		SlidingUpPanelLayout infoSlidingPanel = (SlidingUpPanelLayout) findViewById(R.id.infobox);
 		
 				
 //		infoDrawer.setSlidingEnabled(false);		
@@ -585,11 +588,11 @@ public class MapActivity extends FragmentActivity
 		// Getting reference to the TextView to set title
 		
 //		TextView title = (TextView) findViewById(R.id.description);                       
-		ImageView imageView = ((ImageView) findViewById(R.id.image));
+//		ImageView imageView = ((ImageView) findViewById(R.id.image));
 		
 		// restrict the drag area of the sliding panel to a specific view. 
 		// Otherwise, the whole panel will be slideable and it will intercept all clicks.
-		infoSlidingPanel.setDragView( imageView );
+//		infoSlidingPanel.setDragView( imageView );
 //		infoSlidingPanel.setPanelHeight(10);
 		
 //		title.setText( marker.getTitle() );
@@ -606,11 +609,11 @@ public class MapActivity extends FragmentActivity
 //      	imageLoader.displayImage( protestMap.get( marker.getId() ).getImageUrl(), imageView);
 		
 		// if the Infobox is already showing hide it        
-        if( infoSlidingPanel.isExpanded() )
-        	infoSlidingPanel.collapsePane();
-        // else show it
-        else
-        	infoSlidingPanel.expandPane(0);
+//        if( infoSlidingPanel.isExpanded() )
+//        	infoSlidingPanel.collapsePane();
+//        // else show it
+//        else
+//        	infoSlidingPanel.expandPane(0);
         
 		return false;
 		
@@ -632,7 +635,7 @@ public class MapActivity extends FragmentActivity
 			mImageUri = b.getParcelable("photoUri");
 		if( b.getParcelable("image") != null  ) {
 			imageBitmap = (Bitmap) b.getParcelable("image");
-			ImageView imageView = ((ImageView) findViewById(R.id.image));
+			ImageView imageView = ((ImageView) findViewById(R.id.loaded_image));
 			imageView.setImageBitmap( imageBitmap );
 		}
 	}

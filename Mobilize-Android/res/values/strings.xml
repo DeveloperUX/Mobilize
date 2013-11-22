@@ -9,4 +9,5 @@
 	<string name="capture_protest">Capture Protest</string>
 	<string name="capture_incident">Capture Incident</string>
 	<string name="comment_hint">Comment...</string>
+	<string name="post_comment_btn">Post</string>
 </resources>

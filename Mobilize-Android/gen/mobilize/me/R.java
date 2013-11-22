@@ -328,25 +328,33 @@ containing a value of this type.
         public static final int ic_launcher=0x7f02001b;
         public static final int ic_launcher_bk=0x7f02001c;
         public static final int loading=0x7f02001d;
+        public static final int temp_cartoon=0x7f02001e;
+        public static final int temp_cartoon_man=0x7f02001f;
+        public static final int temp_girl=0x7f020020;
+        public static final int temp_kid=0x7f020021;
     }
     public static final class id {
-        public static final int RelativeLayout1=0x7f050009;
-        public static final int action_settings=0x7f050010;
-        public static final int button1=0x7f050006;
-        public static final int capture_protest_btn=0x7f05000b;
-        public static final int content=0x7f050007;
-        public static final int content_layout=0x7f05000e;
-        public static final int handle=0x7f050008;
+        public static final int Button=0x7f050012;
+        public static final int EditText=0x7f050013;
+        public static final int InnerRelativeLayout=0x7f050011;
+        public static final int RelativeLayout1=0x7f050005;
+        public static final int action_settings=0x7f050014;
+        public static final int capture_protest_btn=0x7f050007;
+        public static final int content_layout=0x7f050009;
+        public static final int description=0x7f05000c;
+        public static final int descriptionX=0x7f05000e;
+        public static final int descriptionXX=0x7f050010;
         public static final int hybrid=0x7f050004;
-        public static final int image=0x7f05000d;
-        public static final int infobox=0x7f050005;
-        public static final int loaded_image=0x7f05000f;
-        public static final int map=0x7f05000a;
+        public static final int loaded_image=0x7f05000a;
+        public static final int map=0x7f050006;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int progress_bar=0x7f05000c;
+        public static final int progress_bar=0x7f050008;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
+        public static final int user_profile_image=0x7f05000b;
+        public static final int user_profile_imageX=0x7f05000d;
+        public static final int user_profile_imageXX=0x7f05000f;
     }
     public static final class layout {
         public static final int activity_map=0x7f030000;
@@ -441,6 +449,7 @@ containing a value of this type.
          */
         public static final int common_signin_button_text_long=0x7f06000e;
         public static final int hello_world=0x7f060017;
+        public static final int post_comment_btn=0x7f06001d;
         public static final int take_picture=0x7f060018;
     }
     public static final class style {
@@ -459,6 +468,7 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        public static final int commentFieldStyle=0x7f080003;
         public static final int nowCardStyle=0x7f080002;
     }
     public static final class styleable {
