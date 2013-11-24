@@ -328,10 +328,11 @@ containing a value of this type.
         public static final int ic_launcher=0x7f02001b;
         public static final int ic_launcher_bk=0x7f02001c;
         public static final int loading=0x7f02001d;
-        public static final int temp_cartoon=0x7f02001e;
-        public static final int temp_cartoon_man=0x7f02001f;
-        public static final int temp_girl=0x7f020020;
-        public static final int temp_kid=0x7f020021;
+        public static final int spinner_white_48=0x7f02001e;
+        public static final int temp_cartoon=0x7f02001f;
+        public static final int temp_cartoon_man=0x7f020020;
+        public static final int temp_girl=0x7f020021;
+        public static final int temp_kid=0x7f020022;
     }
     public static final class id {
         public static final int Button=0x7f050012;
@@ -468,7 +469,15 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        /**  Loading animation for images 
+         */
+        public static final int GenericProgressBackground=0x7f080004;
+        public static final int GenericProgressIndicator=0x7f080005;
+        /**  Background for the input field for placing comments 
+         */
         public static final int commentFieldStyle=0x7f080003;
+        /**  UI Card style taken from Google's card style 
+         */
         public static final int nowCardStyle=0x7f080002;
     }
     public static final class styleable {
