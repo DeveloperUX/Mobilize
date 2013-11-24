@@ -1,21 +1,17 @@
 package mobilize.me;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
 
 import mobilize.me.background.MapUpdater;
-import mobilize.me.external.SlidingUpPanelLayout;
 import mobilize.me.utils.BitmapFixer;
-import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -27,7 +23,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -39,22 +34,18 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.FIFOLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 /**
@@ -200,13 +191,16 @@ public class MapActivity extends FragmentActivity
             	PointsRetrievalTask protestRetrievalTask = new PointsRetrievalTask();
             	protestRetrievalTask.execute();
             	// rerun this task every 15 seconds 
-        		recurringTaskHandler.postDelayed(recurringTask, 15000);
+        		recurringTaskHandler.postDelayed(recurringTask, 30000);
             }            
         };
         
         recurringTask.run();
         
         bitmapFixer = new BitmapFixer();
+        
+
+        setUpLocationClientIfNeeded();
     }
     
     public void updateProtestPoints() {
@@ -246,14 +240,12 @@ public class MapActivity extends FragmentActivity
 
     @Override
 	protected void onStart() {
-//        spiceManager.start(this);
         super.onStart();
 	}
 
 
 	@Override
 	protected void onStop() {
-//        spiceManager.shouldStop();
         super.onStop();
 	}
 
@@ -263,6 +255,7 @@ public class MapActivity extends FragmentActivity
         super.onResume();
         setUpMapIfNeeded();
         setUpLocationClientIfNeeded();
+        // Connect the client
         mLocationClient.connect();
     }
 
@@ -397,7 +390,12 @@ public class MapActivity extends FragmentActivity
             if (resultCode == RESULT_OK) {
             	 
 //            	Uri imageFileUri = intent.getData();
+                // Check that Google Play services is available
             	
+                int serviceAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+                if( serviceAvailable == ConnectionResult.SUCCESS )
+                	Toast.makeText(getApplicationContext(), "Service available", Toast.LENGTH_SHORT).show();
+                            	
                 // Image captured and saved to fileUri specified in the Intent            	
             	Toast.makeText(this, "Image saved to:\n" + mImageUri, Toast.LENGTH_LONG).show();
 //                Toast.makeText(this, "Image saved to:\n" + intent.getData(), Toast.LENGTH_LONG).show();
@@ -409,7 +407,7 @@ public class MapActivity extends FragmentActivity
             	Bitmap scaledBitmap = bitmapFixer.decodeSampledBitmap(mImageUri.getPath(), 1600, 1600);
             	String imageBase64 = bitmapFixer.compressImage(scaledBitmap);
             	// Scale down the original image again to create our thumbnail that we will load first
-            	Bitmap thumbBitmap = bitmapFixer.decodeSampledBitmap(mImageUri.getPath(), 420, 420);
+            	Bitmap thumbBitmap = bitmapFixer.decodeSampledBitmap(mImageUri.getPath(), 240, 240);
             	String thumbBase64 = bitmapFixer.compressImage(thumbBitmap);
             	
         		// Run upload task in background to upload the image to the backend server along with location coordinates
@@ -569,11 +567,15 @@ public class MapActivity extends FragmentActivity
 	}
 	
 	// Include package name to ensure intent extra is unique device wide
-	public final static String IMAGE_URL = "mobilize.me.IMAGE_URL";	
+	public final static String IMAGE_URL = "mobilize.me.IMAGE_URL";
+	public static final String THUMBNAIL = "mobilize.me.THUMBNAIL_URL";	
 	
 	public boolean new_functionality(Marker marker) {
 		Intent intent = new Intent(this, ProtestInfoActivity.class);
-		intent.putExtra(IMAGE_URL, protestMap.get( marker.getId() ).getImageUrl());	// attach the image's uri info
+		intent.putExtra(IMAGE_URL, protestMap.get( marker.getId() ).getImageUrl());	// attach the image's url info
+//		Bundle bitmapBundle = new Bundle();
+//		bitmapBundle.putParcelable(THUMBNAIL, protestMap.get( marker.getId() ).getThumbnail());
+		intent.putExtra(THUMBNAIL, protestMap.get( marker.getId() ).getThumbnail());	// attach the image's thumbnail url 
 		startActivity( intent );	// Show the Image in a new Activity
 		return false;
 	}
@@ -622,10 +624,15 @@ public class MapActivity extends FragmentActivity
 	Bitmap imageBitmap;
 	
 	@Override
-	public void onSaveInstanceState(Bundle b){
-		super.onSaveInstanceState(b);
-		b.putParcelable("image", imageBitmap);
-		b.putParcelable("photoUri", mImageUri);
+	public void onSaveInstanceState(Bundle bundle){
+		super.onSaveInstanceState(bundle);
+		bundle.putParcelable("image", imageBitmap);
+		bundle.putParcelable("photoUri", mImageUri);
+		// if we have a location other than the default [0,0] save it for when the camera returns
+		if( lastLatitude != 0.0 || lastLongitude != 0.0 ) {
+			bundle.putDouble("latitude", lastLatitude);
+			bundle.putDouble("longitude", lastLongitude);
+		}
 	}
 	@Override
 	public void onRestoreInstanceState(Bundle b){
@@ -637,6 +644,10 @@ public class MapActivity extends FragmentActivity
 			imageBitmap = (Bitmap) b.getParcelable("image");
 			ImageView imageView = ((ImageView) findViewById(R.id.loaded_image));
 			imageView.setImageBitmap( imageBitmap );
+		}
+		if( b.getDouble("latitude") != 0.0 || b.getDouble("longitude") != 0.0 ) {
+			lastLatitude = b.getDouble("latitude");
+			lastLongitude = b.getDouble("longitude");
 		}
 	}
    

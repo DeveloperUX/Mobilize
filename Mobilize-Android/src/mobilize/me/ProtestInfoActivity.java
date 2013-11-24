@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.FIFOLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -28,23 +28,24 @@ public class ProtestInfoActivity extends Activity {
         
         // Get the incoming Image URL from the Map 
         Intent intent = getIntent();
-        String imageUrL = intent.getStringExtra(MapActivity.IMAGE_URL);
+        String imageUrl = intent.getStringExtra(MapActivity.IMAGE_URL);
+        Bitmap thumbnailBm = (Bitmap) intent.getParcelableExtra(MapActivity.THUMBNAIL);
         
         // Get a hold on the Image View placeholder
         ImageView imageView = ((ImageView) findViewById(R.id.loaded_image));
         
-
         // Create the Image loader
         imageLoader = initImageLoader();
         
 		// load the image
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-	        .showStubImage(R.drawable.loading) // resource or drawable
-	        .resetViewBeforeLoading(true)  
-	        .cacheOnDisc(true)
+	        .resetViewBeforeLoading(false)  // we'll be showing a thumbnail first
+	        .cacheOnDisc(false)		// Some images are large and we don't want to take up all the phone's space
             .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
 	        .build();
-		imageLoader.displayImage( imageUrL, imageView, options );
+        
+        imageView.setImageBitmap( thumbnailBm );        
+		imageLoader.displayImage( imageUrl, imageView, options );
 	}
 
 	@Override

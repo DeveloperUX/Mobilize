@@ -1,10 +1,12 @@
 package mobilize.me;
 
+import android.graphics.Bitmap;
+
 public class Protest {
 
 	private String type;
 	private String imageUrl;
-	private String thumbUrl;
+	private Bitmap thumbnail;
 	private double latitude;
 	private double longitude;
 	
@@ -40,12 +42,12 @@ public class Protest {
 		this.imageUrl = imageUrl;
 	}
 	
-	public String getThumbUrl() {
-		return thumbUrl;
+	public Bitmap getThumbnail() {
+		return thumbnail;
 	}
 	
-	public void setThumbUrl(String thumbUrl) {
-		this.thumbUrl = thumbUrl;
+	public void setThumbnail(Bitmap thumbnail) {
+		this.thumbnail = thumbnail;
 	}
 
 }

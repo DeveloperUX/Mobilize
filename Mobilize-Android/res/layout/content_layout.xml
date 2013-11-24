@@ -2,8 +2,8 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/second_grey"
     android:orientation="vertical" >
 
@@ -11,21 +11,27 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent" >
 	    
+        <!-- Leave extra margin space on top and bottom for scrolling -->
         <LinearLayout 
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
     		android:orientation="vertical"
-    		android:padding="15dp" >
-    		            
-		    <ImageView
+    		android:paddingTop="12dp"
+    		android:paddingLeft="12dp"
+    		android:paddingRight="12dp"
+    android:clipToPadding="false"
+    android:paddingBottom="80dp"
+     >
+    		    		            
+		   <ImageView
 		        android:id="@+id/loaded_image"
 		        style="@style/nowCardStyle"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:adjustViewBounds="true"
 		        android:padding="8dp"
-		        android:scaleType="fitStart" />
-		
+		        android:scaleType="fitStart" 
+		        android:src="@drawable/spinner_white_48" />
 		    
 	        <LinearLayout 
 			    android:layout_width="fill_parent"
@@ -43,7 +49,7 @@
 				        android:layout_width="40dp"
 				        android:layout_height="40dp"
 				        android:adjustViewBounds="true"
-				        android:padding="4dp"
+				        android:padding="0dp"
 				        android:src="@drawable/temp_cartoon"
 				        android:layout_alignParentLeft="true" />
 			    
@@ -55,7 +61,8 @@
 					    android:textSize="14sp"
 	            		android:layout_toRightOf="@id/user_profile_image" 
 	            		android:layout_centerInParent="true"
-	            		android:paddingLeft="12dp" />	
+	            		android:paddingLeft="14dp"
+	            		android:textColor="@color/Black" />	
 	            </RelativeLayout>
 	            
 			    <View
@@ -74,7 +81,7 @@
 				        android:layout_width="40dp"
 				        android:layout_height="40dp"
 				        android:adjustViewBounds="true"
-				        android:padding="4dp"
+				        android:padding="0dp"
 				        android:src="@drawable/temp_cartoon_man"
 				        android:layout_alignParentLeft="true" />
 			    
@@ -86,7 +93,8 @@
 					    android:textSize="14sp"
 	            		android:layout_toRightOf="@id/user_profile_imageX" 
 	            		android:layout_centerInParent="true"
-	            		android:paddingLeft="12dp" />	
+	            		android:paddingLeft="14dp"
+	            		android:textColor="@color/Black" />	
 	            </RelativeLayout>
 	            
 			    <View
@@ -105,7 +113,7 @@
 				        android:layout_width="40dp"
 				        android:layout_height="40dp"
 				        android:adjustViewBounds="true"
-				        android:padding="4dp"
+				        android:padding="0dp"
 				        android:src="@drawable/temp_girl"
 				        android:layout_alignParentLeft="true" />
 			    
@@ -117,7 +125,8 @@
 					    android:textSize="14sp"
 	            		android:layout_toRightOf="@id/user_profile_imageXX" 
 	            		android:layout_centerInParent="true"
-	            		android:paddingLeft="12dp" />	
+	            		android:paddingLeft="14dp"
+	            		android:textColor="@color/Black" />	
 	            </RelativeLayout>
 	            
     		</LinearLayout>

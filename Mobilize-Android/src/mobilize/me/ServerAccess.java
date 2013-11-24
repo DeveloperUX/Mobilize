@@ -1,6 +1,8 @@
 package mobilize.me;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -45,6 +49,7 @@ public class ServerAccess extends Activity {
     final String uploadFilePath = "/mnt/sdcard/";
     final String uploadFileName = "service_lifecycle.png";
 
+    /*
 	public static String sendToServerX(String imageBase64) {
 		
 		String URL = DEV_SITE + ":" + PORT;
@@ -100,9 +105,9 @@ public class ServerAccess extends Activity {
 	    
 		return encodedImageStr; 
 	}
+	*/
 	
-	/** Get data from the Server **/
-	
+	/** Get data from the Server **/	
 	public static List<Protest> updateFromServer(String time) {
 
 //		String URL = DEV_SITE + ":" + PORT;
@@ -126,7 +131,7 @@ public class ServerAccess extends Activity {
 	        JSONObject jsonResponse = new JSONObject(strFormattedData);
 	        // Convert the JSON data to a useable array of protest points
 	        protestList = convertJsonToArray(jsonResponse);	        
-			Log.e( "HTTP-GET", protestList.toString() );
+			Log.i( TAG, protestList.toString() );
 			
 		} catch(JSONException e) {
 	    	Log.e( TAG, "Error in http connection " + e.toString() );
@@ -143,7 +148,7 @@ public class ServerAccess extends Activity {
 	    return protestList;		
 	}
 	
-	private static List<Protest> convertJsonToArray(JSONObject jsonObject) throws JSONException {
+	private static List<Protest> convertJsonToArray(JSONObject jsonObject) throws JSONException, IOException {
 		// This list will hold all the protest points to be created
 		List<Protest> protestList = new ArrayList<Protest>();
 		// get the ROWS object which is an array of all the protest points
@@ -156,7 +161,11 @@ public class ServerAccess extends Activity {
 			// convert the type and url of the protest
 			temp_protest.setType( nextJsonObj.optString("type") ); // type of event
 			temp_protest.setImageUrl( nextJsonObj.optString("image_url") ); // url of the image
-			temp_protest.setThumbUrl( nextJsonObj.optString("thumb_url") ); // url of the image
+//			temp_protest.setThumbUrl( nextJsonObj.optString("thumb_url") ); // url of the image
+			// Parse and download the Thumbnail image to display
+			URL thumbnailUrl = new URL(nextJsonObj.optString("thumb_url"));
+			Bitmap thumbnailBitmap = BitmapFactory.decodeStream(thumbnailUrl.openConnection().getInputStream());
+			temp_protest.setThumbnail( thumbnailBitmap );			
 			// get the latitude and longitude
 			JSONObject geoJsonData = new JSONObject( nextJsonObj.optString("st_asgeojson") );
 			double longitude = Double.parseDouble("" + geoJsonData.optJSONArray("coordinates").get(0));
@@ -165,6 +174,7 @@ public class ServerAccess extends Activity {
 //			double latitude = (Double) geoJsonData.optJSONArray("coordinates").get(1);
 			temp_protest.setLatitude(latitude);
 			temp_protest.setLongitude(longitude);
+			Log.i(TAG, "Protest Image URL: " + temp_protest.getImageUrl()); // DEBUG
 			// add the protest point to the list
 			protestList.add(temp_protest);
 		}
@@ -184,7 +194,8 @@ public class ServerAccess extends Activity {
 	
 	public static String sendToServer(String thumbnail, String encodedImageStr, String latitude, String longitude, String userId) {
 		
-//		String URL = DEV_SITE + ":" + PORT;
+//		String URL = DEV_SITE + ":" + PORT;			
+		Log.w("SendToServer", "Lat: " + latitude + " - Long: " + longitude);
 		
 		String response = "";
 		
@@ -220,14 +231,14 @@ public class ServerAccess extends Activity {
             // Execute post and get the result
             response = client.execute( httpPost, handler );	// remove handler if you want to return a HttpResponse object
 			
-			Log.e("HTTP-POST", response);
+			Log.i(TAG, response);
             
 	    } catch(Exception e) {
 	    	Log.e( TAG, "Error in http connection " + e.toString() );
 	    }
 		
 	    //FEEDBACK FOR DEBUGGING
-	    Log.e( TAG, "HTTP-POST Response: " + response );
+	    Log.v( TAG, "HTTP-POST Response: " + response );
 	    // return the final JSON response
 	    return response;
 	}
