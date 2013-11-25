@@ -63,7 +63,7 @@ public class OccupyMapActivity extends FragmentActivity
 //        OnMyLocationButtonClickListener,
         LocationResultListener, OnMarkerClickListener {
 
-	   private ConnectivityManager cMgr;
+	private ConnectivityManager cMgr;
 
     private GoogleMap gMap;
 
@@ -511,8 +511,21 @@ public class OccupyMapActivity extends FragmentActivity
      */
     @Override
     public void onLocationChanged(Location location) {
-        lastLatitude = location.getLatitude();
-        lastLongitude = location.getLongitude();
+    	boolean firstLocationLock = false; 
+    	if( lastLatitude == 0.0 && lastLongitude == 0.0 )
+    		firstLocationLock = true;
+    		
+    	if( location != null ) {
+	        lastLatitude = location.getLatitude();
+	        lastLongitude = location.getLongitude();
+    	}
+    	
+    	if( firstLocationLock ) {
+			// Pan to the user's location now that we found him!
+			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+		    gMap.animateCamera(cameraUpdate);
+    	}
     }
 
     /**
@@ -548,21 +561,17 @@ public class OccupyMapActivity extends FragmentActivity
 //        return false;
 //    }
 
-    /** From LocationResultListener :: Called when user location has been found */
+    /** 
+     * From LocationResultListener :: Called when user location has been found
+     * For some odd reason this function is not being called 
+     **/
 	@Override
 	public void onLocationResultAvailable(Location location) {
 		if( location != null ) {
 			// Save the user's new found location
 			lastLatitude = location.getLatitude();
 			lastLongitude = location.getLongitude();
-			// Pan to the user's location now that we found him!
-			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-		    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-		    gMap.animateCamera(cameraUpdate);
 		}
-		else
-			return;
-		
 	}
 
 

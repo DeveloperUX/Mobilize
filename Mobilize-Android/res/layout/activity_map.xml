@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         class="com.google.android.gms.maps.SupportMapFragment"
-        map:cameraZoom="4" />
+        map:cameraZoom="1" />
 
     <ImageButton
         android:id="@+id/capture_protest_btn"
