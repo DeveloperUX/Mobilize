@@ -51,9 +51,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 /**
- * This demo shows how GMS Location can be used to check for changes to the users location.  The
- * "My Location" button uses GMS Location to set the blue dot representing the users location. To
- * track changes to the users location on the map, we request updates from the
+ * The main activity for our app which is the Map of the protests. We are using the Support Fragments
+ * so we can target older devices. This class really needs a major overhaul.
  * {@link LocationClient}.
  */
 public class OccupyMapActivity extends FragmentActivity
