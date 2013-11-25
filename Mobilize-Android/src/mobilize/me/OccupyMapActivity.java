@@ -38,6 +38,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -551,8 +553,13 @@ public class OccupyMapActivity extends FragmentActivity
 	@Override
 	public void onLocationResultAvailable(Location location) {
 		if( location != null ) {
+			// Save the user's new found location
 			lastLatitude = location.getLatitude();
 			lastLongitude = location.getLongitude();
+			// Pan to the user's location now that we found him!
+			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+		    gMap.animateCamera(cameraUpdate);
 		}
 		else
 			return;

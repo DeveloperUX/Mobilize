@@ -1,41 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Yellow"
-    android:id="@+id/login_layout" >
+    android:background="@drawable/login_bg" >
 
-    <EditText
-        android:id="@+id/signin_user_code"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:inputType="number" >
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" >
 
-        <requestFocus />
-    </EditText>
+        <EditText
+            android:id="@+id/signin_user_code"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="@string/access_code"
+            android:inputType="number" >
 
-    <Button
-        android:id="@+id/signin_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/signin_user_code"
-        android:layout_alignRight="@+id/signin_user_code"
-        android:layout_below="@+id/signin_user_code"
-        android:text="@string/sign_in" />
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/signin_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in" />
+
+        <!-- <TextView -->
+        <!-- android:id="@+id/signin_text" -->
+        <!-- android:layout_width="wrap_content" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:layout_above="@+id/signin_user_code" -->
+        <!-- android:layout_alignLeft="@+id/signin_user_code" -->
+        <!-- android:layout_alignRight="@+id/signin_user_code" -->
+        <!-- android:layout_marginBottom="16dp" -->
+        <!-- android:text="@string/access_code_hint" -->
+        <!-- android:textAppearance="?android:attr/textAppearanceLarge" -->
+        <!-- android:textColor="@color/DarkRed" -->
+        <!-- android:textStyle="bold" -->
+        <!-- android:gravity="center" /> -->
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/signin_text"
+        android:id="@+id/app_version_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/signin_user_code"
-        android:layout_alignLeft="@+id/signin_user_code"
-        android:layout_alignRight="@+id/signin_user_code"
-        android:layout_marginBottom="16dp"
-        android:text="@string/access_code"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/Black" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="@string/app_version"
+        android:textColor="@color/DarkBlue"
+        android:textSize="8sp" />
 
 </RelativeLayout>

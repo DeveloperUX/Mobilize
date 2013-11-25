@@ -21,13 +21,14 @@
         android:id="@+id/capture_protest_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="26dp"
-        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"        
+        android:layout_marginBottom="18dp"
+        android:layout_centerHorizontal="true"        
         android:onClick="captureProtest"
         android:src="@drawable/camera_icon"
-        android:text="@string/capture_protest" />
+        android:text="@string/capture_protest"
+        android:padding="18dp"
+        style="@style/nowCardStyle" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

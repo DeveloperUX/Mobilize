@@ -8,9 +8,11 @@
 	<string name="capture_clash">Capture Clash</string>
 	<string name="capture_protest">Capture Protest</string>
 	<string name="capture_incident">Capture Incident</string>
-	<string name="comment_hint">Comment...</string>
+	<string name="comment_hint">Comment</string>
 	<string name="post_comment_btn">Post</string>
-	<string name="access_code">Access Code:</string>
-	<string name="access_code_hint">Sorry Still In Beta</string>
+	<string name="access_code">Your Access Code</string>
+	<string name="access_code_hint">Mobilize BETA</string>
 	<string name="sign_in">Sign In</string>
+	<string name="app_version">version: 0.1 BETA</string>
+	
 </resources>
