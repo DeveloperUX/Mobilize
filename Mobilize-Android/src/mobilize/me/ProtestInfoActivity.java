@@ -28,8 +28,8 @@ public class ProtestInfoActivity extends Activity {
         
         // Get the incoming Image URL from the Map 
         Intent intent = getIntent();
-        String imageUrl = intent.getStringExtra(MapActivity.IMAGE_URL);
-        Bitmap thumbnailBm = (Bitmap) intent.getParcelableExtra(MapActivity.THUMBNAIL);
+        String imageUrl = intent.getStringExtra(OccupyMapActivity.IMAGE_URL);
+        Bitmap thumbnailBm = (Bitmap) intent.getParcelableExtra(OccupyMapActivity.THUMBNAIL);
         
         // Get a hold on the Image View placeholder
         ImageView imageView = ((ImageView) findViewById(R.id.loaded_image));

@@ -10,4 +10,7 @@
 	<string name="capture_incident">Capture Incident</string>
 	<string name="comment_hint">Comment...</string>
 	<string name="post_comment_btn">Post</string>
+	<string name="access_code">Access Code:</string>
+	<string name="access_code_hint">Sorry Still In Beta</string>
+	<string name="sign_in">Sign In</string>
 </resources>

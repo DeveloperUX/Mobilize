@@ -54,7 +54,7 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
  * track changes to the users location on the map, we request updates from the
  * {@link LocationClient}.
  */
-public class MapActivity extends FragmentActivity
+public class OccupyMapActivity extends FragmentActivity
         implements
         ConnectionCallbacks,
         OnConnectionFailedListener,

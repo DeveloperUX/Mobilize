@@ -42,23 +42,28 @@
 	    android:value="AIzaSyBUxUsNvVxJEzX3wIvJcobAfCdPZvSQzFk"/>
 	    
         <activity
-            android:name="mobilize.me.MapActivity"
+            android:name="mobilize.me.MobilizeApp"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-             >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+        <!-- Activity showing the protest image and comments -->
         <activity
             android:name="mobilize.me.ProtestInfoActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="mobilize.me.MapActivity" />
+                android:value="mobilize.me.OccupyMapActivity" />
+        </activity>
+        <!-- Activity showing our map for the protests -->
+        <activity
+            android:name="mobilize.me.OccupyMapActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
                 
     </application>
