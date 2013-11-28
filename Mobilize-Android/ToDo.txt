@@ -1,3 +1,5 @@
 Things to do:
-	Save the user's location when taking a picture horizontally
+	Save the user's location when taking a picture horizontally DONE
+	Only update with new protests instead of overriding old images
+	Add commenting feature
 	

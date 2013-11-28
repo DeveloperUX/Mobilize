@@ -187,16 +187,15 @@ public class OccupyMapActivity extends FragmentActivity
         
 		
 		recurringTaskHandler = new Handler();	
-        recurringTask = new Runnable() {        	
+        recurringTask = new Runnable() {
+        	PointsRetrievalTask protestRetrievalTask;
             public void run() {
-            	PointsRetrievalTask protestRetrievalTask = new PointsRetrievalTask();
+            	protestRetrievalTask = new PointsRetrievalTask();
             	protestRetrievalTask.execute();
-            	// rerun this task every 15 seconds 
-        		recurringTaskHandler.postDelayed(recurringTask, 30000);
+            	// rerun this task every 60 seconds 
+        		recurringTaskHandler.postDelayed(recurringTask, 60000);
             }            
-        };
-        
-        recurringTask.run();
+        };        
         
         bitmapFixer = new BitmapFixer();
         
@@ -242,12 +241,16 @@ public class OccupyMapActivity extends FragmentActivity
     @Override
 	protected void onStart() {
         super.onStart();
+        // Run the repeating thread that updates the map pins
+        recurringTask.run();
 	}
 
 
 	@Override
 	protected void onStop() {
         super.onStop();
+        // remove all repeating threads
+        recurringTaskHandler.removeCallbacks(recurringTask);
 	}
 
 
@@ -391,14 +394,9 @@ public class OccupyMapActivity extends FragmentActivity
             if (resultCode == RESULT_OK) {
             	 
 //            	Uri imageFileUri = intent.getData();
-                // Check that Google Play services is available
-            	
-                int serviceAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-                if( serviceAvailable == ConnectionResult.SUCCESS )
-                	Toast.makeText(getApplicationContext(), "Service available", Toast.LENGTH_SHORT).show();
                             	
                 // Image captured and saved to fileUri specified in the Intent            	
-            	Toast.makeText(this, "Image saved to:\n" + mImageUri, Toast.LENGTH_LONG).show();
+            	Toast.makeText(this, "Image saved to your phone", Toast.LENGTH_LONG).show();
 //                Toast.makeText(this, "Image saved to:\n" + intent.getData(), Toast.LENGTH_LONG).show();
 //                ImageView imageView = new ImageView(MyLocationDemoActivity.this);
                 //... some code to inflate/create/find appropriate ImageView to place grabbed image
